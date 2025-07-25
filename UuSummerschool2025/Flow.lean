@@ -181,10 +181,11 @@ namespace Flow
 variable {τ : Type*} [AddMonoid τ] [TopologicalSpace τ] [ContinuousAdd τ]
   {α : Type*} [TopologicalSpace α] (ϕ : Flow τ α)
 
-def positive_semiorbit [Preorder τ] [Zero τ] (ϕ : Flow τ α) (x : α) : Set α :=
+
+def positiveSemiorbit [Preorder τ] [Zero τ] (ϕ : Flow τ α) (x : α) : Set α :=
 {y | ∃ t : τ,  t ≥ 0 ∧ ϕ t x = y}
 
-def negative_semiorbit [Preorder τ] [Zero τ] (ϕ : Flow τ α) (x : α) : Set α :=
+def negativeSemiorbit [Preorder τ] [Zero τ] (ϕ : Flow τ α) (x : α) : Set α :=
 {y | ∃ t : τ, t ≤ 0 ∧ ϕ t x = y}
 
 def orbit (ϕ : Flow τ α) (x : α) : Set α :=
@@ -193,6 +194,21 @@ def orbit (ϕ : Flow τ α) (x : α) : Set α :=
 def IsTopologicallyTransitive (ϕ : Flow τ α) : Prop :=
   ∃ x : α, Dense (ϕ.orbit x)
 
+def IsClosedNonEmptyInvariant (ϕ : Flow τ α) (s : Set α) : Prop :=
+  Nonempty s
+  ∧ IsInvariant ϕ s
+  ∧ IsClosed s
+
+def IsMinimal (ϕ : Flow τ α) (s : Set α) : Prop :=
+  --∀ a ∈ s, Dense (Subtype.val⁻¹' ϕ.orbit a : Set s)
+  IsClosedNonEmptyInvariant ϕ s
+  ∧ ¬ ∃ t : Set α, (
+    t ⊆ s
+    ∧ t ≠ s
+    ∧ IsClosedNonEmptyInvariant ϕ t
+  )
+
+example (s t : Set α) : Set t := Subtype.val⁻¹' s
 
 -- variable (s : Flow τ α)
 
